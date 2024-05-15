@@ -1,0 +1,70 @@
+<div [formGroup]="dynamicForm" class="dyn-form" *ngFor="let field of fields">
+  <div [ngSwitch]="field.controlType" class="field-wrapper">
+    <ng-container *ngSwitchCase="'input'">
+      <mat-form-field *ngIf="field?.component == 'mat' && field.type == 'text'" class="example-full-width">
+        <mat-label>{{ field?.label }}</mat-label> 
+        <input
+          matInput
+          class="dyn-input"
+          placeholder="{{ field.placeholder }}"
+          [value]="field.defaultValue"
+          [type]="field.type"
+          [readonly]="field.config.readonly"
+          [disabled]="field.config.is_disabled"
+          [formControlName]="field.key" 
+        />
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'select'">
+      <mat-form-field *ngIf="field?.component == 'mat' && field.type == 'select'">
+        <mat-label>{{ field?.label }}</mat-label>
+        <mat-select [formControlName]="field.key"> <!-- Corrected binding -->
+          <mat-option *ngFor="let opt of field.options" [value]="opt">{{ opt }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  
+    <ng-container *ngSwitchCase="'input'">
+      <mat-form-field *ngIf="field?.component == 'mat' && field.type == 'textarea'">
+        <mat-label>{{ field?.label }}</mat-label>
+        <textarea matInput class="dyn-input"
+                  placeholder="{{ field.placeholder }}"
+                  [value]="field.defaultValue"
+                  [type]="field.type"
+                  [readonly]="field.config.readonly"
+                  [disabled]="field.config.is_disabled"
+                  [formControlName]="field.key" 
+        ></textarea>
+      </mat-form-field>
+    </ng-container>
+    
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['required']">
+      <span *ngIf="field.validations?.requiredMsg">{{ field.validations?.requiredMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['pattern']">
+      <span *ngIf="field.validations?.patternMsg">{{ field.validations?.patternMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['minlength']">
+      <span *ngIf="field.validations?.minLengthMsg">{{ field.validations?.minLengthMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['maxlength']">
+      <span *ngIf="field.validations?.maxLengthMsg">{{ field.validations?.maxLengthMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['email']">
+      <span *ngIf="field.validations?.emailMsg">{{ field.validations?.emailMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['min']">
+      <span *ngIf="field.validations?.minMsg">{{ field.validations?.minMsg }}</span>
+    </div>
+    <div class="err-msg" *ngIf="(dynamicForm.get(field.key)?.touched || submitted) && dynamicForm.get(field.key)?.errors?.['max']">
+      <span *ngIf="field.validations?.maxMsg">{{ field.validations?.maxMsg }}</span>
+    </div>
+    
+    
+
+    <ng-container *ngSwitchCase="'multi_input'">
+        <app-dynamic-text-block></app-dynamic-text-block>
+    </ng-container >
+  </div>
+</div>
